@@ -1,5 +1,6 @@
 package io.hhplus.tdd.point.service;
 
+<<<<<<< HEAD
 import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.point.UserPoint;
 import org.junit.jupiter.api.Test;
@@ -13,10 +14,21 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
+=======
+import io.hhplus.tdd.point.UserPoint;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+>>>>>>> 60fa8be6ad812200db3e4e406e9e5276a0ab39ff
 @ExtendWith(MockitoExtension.class)
 public class PointServiceTest {
 
     @Mock
+<<<<<<< HEAD
     UserPointTable userPointTable;
 
     @InjectMocks
@@ -25,16 +37,25 @@ public class PointServiceTest {
     /**
      * 포인트 조회
      */
+=======
+    PointService pointService;
+
+>>>>>>> 60fa8be6ad812200db3e4e406e9e5276a0ab39ff
     @Test
     void viewPoint(){
         // given
         long userId = 1;
+<<<<<<< HEAD
         when(userPointTable.selectById(userId)).thenReturn(new UserPoint(0,0,0));
+=======
+        Mockito.when(pointService.viewPoint(userId)).thenReturn(new UserPoint(0,0,0));
+>>>>>>> 60fa8be6ad812200db3e4e406e9e5276a0ab39ff
 
         // when
         UserPoint userPoint = pointService.viewPoint(userId);
 
         // then
+<<<<<<< HEAD
         assertThat(userPoint).isNotNull();
     }
 
@@ -73,4 +94,8 @@ public class PointServiceTest {
                 .hasMessage("포인트는 10만원을 넘길 수 없습니다.");
     }
 
+=======
+        Assertions.assertThat(userPoint).isNotNull();
+    }
+>>>>>>> 60fa8be6ad812200db3e4e406e9e5276a0ab39ff
 }

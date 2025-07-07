@@ -13,6 +13,7 @@ public class PointService {
 
     public UserPoint viewPoint(long userId) {
 
+<<<<<<< HEAD
         return userPointTable.selectById(userId);
     }
 
@@ -22,5 +23,8 @@ public class PointService {
         if(chargedPoint > 100000) throw new Exception("포인트는 10만원을 넘길 수 없습니다.");
 
         return userPointTable.insertOrUpdate(userId, chargedPoint);
+=======
+        return new UserPoint(0, 0, 0);
+>>>>>>> 60fa8be6ad812200db3e4e406e9e5276a0ab39ff
     }
 }
