@@ -34,6 +34,9 @@ public class PointControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(pointController).build();
     }
 
+    /**
+     * 포인트 조회
+     */
     @Test
     void viewPoint() throws Exception {
         // given

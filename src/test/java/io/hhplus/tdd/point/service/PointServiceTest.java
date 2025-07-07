@@ -19,6 +19,9 @@ public class PointServiceTest {
     @InjectMocks
     PointService pointService;
 
+    /**
+     * 포인트 조회
+     */
     @Test
     void viewPoint(){
         // given
