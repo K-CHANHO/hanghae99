@@ -1,6 +1,9 @@
 package io.hhplus.tdd.point.service;
 
+import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
+import io.hhplus.tdd.point.PointHistory;
+import io.hhplus.tdd.point.TransactionType;
 import io.hhplus.tdd.point.UserPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class PointService {
 
     private final UserPointTable userPointTable;
+    private final PointHistoryTable pointHistoryTable;
 
     public UserPoint viewPoint(long userId) {
 
@@ -32,5 +36,12 @@ public class PointService {
         UserPoint usedPoint = userPointTable.insertOrUpdate(userId, afterPoint);
 
         return usedPoint;
+    }
+
+    public PointHistory saveHistory(long userId, long amount, TransactionType type, long updateMillis) {
+
+        PointHistory pointHistory = pointHistoryTable.insert(userId, amount, type, updateMillis);
+
+        return pointHistory;
     }
 }

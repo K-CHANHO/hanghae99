@@ -1,6 +1,9 @@
 package io.hhplus.tdd.point.service;
 
+import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
+import io.hhplus.tdd.point.PointHistory;
+import io.hhplus.tdd.point.TransactionType;
 import io.hhplus.tdd.point.UserPoint;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +23,9 @@ public class PointServiceTest {
 
     @Mock
     UserPointTable userPointTable;
+
+    @Mock
+    PointHistoryTable pointHistoryTable;
 
     @InjectMocks
     PointService pointService;
@@ -110,7 +116,47 @@ public class PointServiceTest {
         assertThatThrownBy(() -> pointService.usePoint(userId, amount))
                 .isInstanceOf(Exception.class)
                 .hasMessage("포인트가 부족합니다.");
+    }
+
+    /**
+     * 포인트 충전 시 내역 저장
+     */
+    @Test
+    void saveHistoryWhenCharge(){
+        // given
+        long userId = 1;
+        long amount = 5000;
+        when(pointHistoryTable.insert(anyLong(), anyLong(), any(), anyLong())).thenReturn(
+                new PointHistory(1, userId, amount, TransactionType.CHARGE, System.currentTimeMillis())
+        );
+
+        // when
+        PointHistory pointHistory = pointService.saveHistory(userId, amount, TransactionType.CHARGE, System.currentTimeMillis());
+
+        // then
+        assertThat(pointHistory.amount()).isEqualTo(5000);
+        assertThat(pointHistory.type()).isEqualTo(TransactionType.CHARGE);
+        assertThat(pointHistory.id()).isEqualTo(1);
 
     }
+
+
+    /**
+     *  포인트 충전/이용 내역 조회
+     */
+    /*
+    @Test
+    void viewPointChargeAndUseHistory(){
+        // given
+        long userId = 1;
+        when()
+
+        // when
+        List<PointHistory> pointHistoryList = pointService.viewPointHistory(userId);
+
+        // then
+
+    }
+    */
 
 }
