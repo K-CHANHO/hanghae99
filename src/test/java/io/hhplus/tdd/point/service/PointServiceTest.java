@@ -12,6 +12,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -119,7 +125,7 @@ public class PointServiceTest {
     }
 
     /**
-     * 포인트 충전/사용 시 내역 저장
+     * 포인트 내역 저장
      */
     @Test
     void saveHistory(){
@@ -142,19 +148,26 @@ public class PointServiceTest {
     /**
      *  포인트 충전/이용 내역 조회
      */
-    /*
     @Test
     void viewPointChargeAndUseHistory(){
         // given
         long userId = 1;
-        when()
+        List<PointHistory> expectedList = Arrays.asList(
+                new PointHistory(1, userId, 1000, TransactionType.CHARGE, System.currentTimeMillis()),
+                new PointHistory(2, userId, 2000, TransactionType.CHARGE, System.currentTimeMillis()),
+                new PointHistory(3, userId, 2000, TransactionType.USE, System.currentTimeMillis()),
+                new PointHistory(4, userId, 10000, TransactionType.CHARGE, System.currentTimeMillis()),
+                new PointHistory(5, userId, 5000, TransactionType.USE, System.currentTimeMillis())
+        );
+        when(pointHistoryTable.selectAllByUserId(userId)).thenReturn(expectedList);
 
         // when
         List<PointHistory> pointHistoryList = pointService.viewPointHistory(userId);
 
         // then
+        assertThat(pointHistoryList.isEmpty()).isFalse();
 
     }
-    */
+
 
 }

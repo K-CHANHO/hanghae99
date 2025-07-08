@@ -8,6 +8,8 @@ import io.hhplus.tdd.point.UserPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PointService {
@@ -22,20 +24,24 @@ public class PointService {
 
     public UserPoint chargePoint(long userId, long chargeAmount) throws Exception {
         UserPoint userPoint = userPointTable.selectById(userId);
+
         long chargedPoint = userPoint.point() + chargeAmount;
         if(chargedPoint > 100000) throw new Exception("포인트는 10만원을 넘길 수 없습니다.");
+
+        saveHistory(userId, chargeAmount, TransactionType.CHARGE, System.currentTimeMillis());
 
         return userPointTable.insertOrUpdate(userId, chargedPoint);
     }
 
     public UserPoint usePoint(long userId, long amount) throws Exception {
-
         UserPoint userPoint = userPointTable.selectById(userId);
+
         long afterPoint = userPoint.point() - amount;
         if(afterPoint < 0) throw new Exception("포인트가 부족합니다.");
-        UserPoint usedPoint = userPointTable.insertOrUpdate(userId, afterPoint);
 
-        return usedPoint;
+        saveHistory(userId, amount, TransactionType.USE, System.currentTimeMillis());
+
+        return userPointTable.insertOrUpdate(userId, afterPoint);
     }
 
     public PointHistory saveHistory(long userId, long amount, TransactionType type, long updateMillis) {
@@ -43,5 +49,9 @@ public class PointService {
         PointHistory pointHistory = pointHistoryTable.insert(userId, amount, type, updateMillis);
 
         return pointHistory;
+    }
+
+    public List<PointHistory> viewPointHistory(long userId) {
+        return pointHistoryTable.selectAllByUserId(userId);
     }
 }
