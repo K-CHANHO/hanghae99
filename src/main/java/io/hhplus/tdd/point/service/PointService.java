@@ -16,11 +16,21 @@ public class PointService {
         return userPointTable.selectById(userId);
     }
 
-    public UserPoint charge(long userId, long chargeAmount) throws Exception {
+    public UserPoint chargePoint(long userId, long chargeAmount) throws Exception {
         UserPoint userPoint = userPointTable.selectById(userId);
         long chargedPoint = userPoint.point() + chargeAmount;
         if(chargedPoint > 100000) throw new Exception("포인트는 10만원을 넘길 수 없습니다.");
 
         return userPointTable.insertOrUpdate(userId, chargedPoint);
+    }
+
+    public UserPoint usePoint(long userId, long amount) throws Exception {
+
+        UserPoint userPoint = userPointTable.selectById(userId);
+        long afterPoint = userPoint.point() - amount;
+        if(afterPoint < 0) throw new Exception("포인트가 부족합니다.");
+        UserPoint usedPoint = userPointTable.insertOrUpdate(userId, afterPoint);
+
+        return usedPoint;
     }
 }

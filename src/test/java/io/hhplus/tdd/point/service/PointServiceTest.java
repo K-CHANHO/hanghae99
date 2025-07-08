@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -52,7 +53,7 @@ public class PointServiceTest {
         when(userPointTable.insertOrUpdate(anyLong(), anyLong())).thenReturn(new UserPoint(userId, 25000, System.currentTimeMillis()));
 
         // when
-        UserPoint userPoint = pointService.charge(userId, chargeAmount);
+        UserPoint userPoint = pointService.chargePoint(userId, chargeAmount);
 
         // then
         assertThat(userPoint.point()).isEqualTo(25000);
@@ -66,13 +67,49 @@ public class PointServiceTest {
     void chargePointUntil10만원() throws Exception {
         // given
         long userId = 1;
-        long chargeAmount = 200000;
-        when(userPointTable.selectById(userId)).thenReturn(new UserPoint(userId, chargeAmount, System.currentTimeMillis()));
+        long chargeAmount = 60000;
+        when(userPointTable.selectById(userId)).thenReturn(new UserPoint(userId, 50000, System.currentTimeMillis()));
 
         // when, then
-        assertThatThrownBy(() -> pointService.charge(userId, chargeAmount))
+        assertThatThrownBy(() -> pointService.chargePoint(userId, chargeAmount))
                 .isInstanceOf(Exception.class)
                 .hasMessage("포인트는 10만원을 넘길 수 없습니다.");
+
+    }
+
+    /**
+     * 포인트 사용
+     */
+    @Test
+    void usePoint() throws Exception {
+        // given
+        long userId = 1;
+        long amount = 1000;
+        when(userPointTable.selectById(any())).thenReturn(new UserPoint(userId, 2000, System.currentTimeMillis()));
+        when(userPointTable.insertOrUpdate(anyLong(), anyLong())).thenReturn(new UserPoint(userId, 1000, System.currentTimeMillis()));
+
+        // when
+        UserPoint userPoint = pointService.usePoint(userId, amount);
+
+        // then
+        assertThat(userPoint.point()).isEqualTo(1000);
+    }
+
+    /**
+     * 포인트 사용
+     * 현재 보유중인 포인트 이상으로 사용하면 에러
+     */
+    @Test
+    void usePointFail(){
+        // given
+        long userId = 1;
+        long amount = 5000;
+        when(userPointTable.selectById(any())).thenReturn(new UserPoint(userId, 2000, System.currentTimeMillis()));
+
+        // when, then
+        assertThatThrownBy(() -> pointService.usePoint(userId, amount))
+                .isInstanceOf(Exception.class)
+                .hasMessage("포인트가 부족합니다.");
 
     }
 
