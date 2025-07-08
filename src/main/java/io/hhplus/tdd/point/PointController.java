@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/point")
@@ -38,14 +39,18 @@ public class PointController {
     }
 
     /**
-     * TODO - 특정 유저의 포인트를 충전하는 기능을 작성해주세요.
+     * 특정 유저의 포인트를 충전
      */
     @PatchMapping("{id}/charge")
     public UserPoint charge(
             @PathVariable long id,
-            @RequestBody long amount
-    ) throws Exception {
-        return pointService.charge(id, amount);
+//            @RequestBody Long amount
+            @RequestBody Map<String, Long> amountMap
+            ) throws Exception {
+
+        if(amountMap.get("amount") < 0) throw new Exception("포인트는 마이너스가 될 수 없습니다.");
+
+        return pointService.charge(id, amountMap.get("amount"));
     }
 
     /**
