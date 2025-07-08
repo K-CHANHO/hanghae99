@@ -139,4 +139,50 @@ public class PointControllerTest {
 
     }
 
+    /**
+     * 포인트 사용
+     * 0원 밑으로 사용
+     */
+    @Test
+    void usePointUnderZero() throws Exception {
+        // given
+        String url = "/point/{id}/use";
+        String requestBody = "{\"amount\" : \"-5000\"}";
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                patch(url, 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+        );
+
+        // then
+        actions.andExpect(status().is(500))
+                .andExpect(result -> assertThat(result.getResolvedException()).isInstanceOf(Exception.class))
+                .andExpect(jsonPath("$.message").value("에러가 발생했습니다."))
+                .andExpect(jsonPath("$.code").value("500"));
+    }
+
+    /**
+     * 포인트 사용
+     */
+    @Test
+    void usePoint() throws Exception {
+        // given
+        String url = "/point/{id}/use";
+        String requestBody = "{\"amount\" : \"5000\"}";
+        when(pointService.usePoint(anyLong(), anyLong())).thenReturn(new UserPoint(1, 1000, System.currentTimeMillis()));
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                patch(url, 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+        );
+
+        // then
+        actions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.point").value(1000));
+    }
+
 }

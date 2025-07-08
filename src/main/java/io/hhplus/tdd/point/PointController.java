@@ -54,13 +54,17 @@ public class PointController {
     }
 
     /**
-     * TODO - 특정 유저의 포인트를 사용하는 기능을 작성해주세요.
+     * 특정 유저의 포인트를 사용
      */
     @PatchMapping("{id}/use")
     public UserPoint use(
             @PathVariable long id,
-            @RequestBody long amount
-    ) {
-        return new UserPoint(0, 0, 0);
+//            @RequestBody long amount
+            @RequestBody Map<String, Long> amountMap
+    ) throws Exception {
+
+        if(amountMap.get("amount") < 0) throw new Exception("포인트는 0원 이하로 사용할 수 없습니다");
+
+        return pointService.usePoint(id, amountMap.get("amount"));
     }
 }
