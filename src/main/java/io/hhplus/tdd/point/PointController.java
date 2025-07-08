@@ -50,7 +50,7 @@ public class PointController {
 
         if(amountMap.get("amount") < 0) throw new Exception("포인트는 마이너스가 될 수 없습니다.");
 
-        return pointService.charge(id, amountMap.get("amount"));
+        return pointService.chargePoint(id, amountMap.get("amount"));
     }
 
     /**

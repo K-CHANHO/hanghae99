@@ -70,7 +70,7 @@ public class PointControllerTest {
         // given
         String url = "/point/{id}/charge";
         String requestBody = "{\"amount\" : \"110000\"}";
-        when(pointService.charge(anyLong(), anyLong())).thenThrow(new Exception("포인트는 10만원을 넘길 수 없습니다."));
+        when(pointService.chargePoint(anyLong(), anyLong())).thenThrow(new Exception("포인트는 10만원을 넘길 수 없습니다."));
 
         // when
         ResultActions actions =
@@ -122,7 +122,7 @@ public class PointControllerTest {
         // given
         String url = "/point/{id}/charge";
         String requestBody = "{\"amount\" : \"5000\"}";
-        when(pointService.charge(anyLong(), anyLong())).thenReturn(new UserPoint(1, 50000, System.currentTimeMillis()));
+        when(pointService.chargePoint(anyLong(), anyLong())).thenReturn(new UserPoint(1, 50000, System.currentTimeMillis()));
 
         // when
         ResultActions actions =
