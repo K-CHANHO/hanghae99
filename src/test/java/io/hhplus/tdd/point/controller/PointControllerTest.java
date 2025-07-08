@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,7 +49,7 @@ public class PointControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                MockMvcRequestBuilders.get(url, 1)
+                get(url, 1)
         );
 
         // then
@@ -69,7 +70,7 @@ public class PointControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                MockMvcRequestBuilders.patch(url, 1)
+                patch(url, 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
