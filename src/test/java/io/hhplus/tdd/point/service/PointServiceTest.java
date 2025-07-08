@@ -140,6 +140,27 @@ public class PointServiceTest {
 
     }
 
+    /**
+     * 포인트 사용 시 내역 저장
+     */
+    @Test
+    void saveHistoryWhenUse(){
+        // given
+        long userId = 1;
+        long amount = 5000;
+        when(pointHistoryTable.insert(anyLong(), anyLong(), any(), anyLong())).thenReturn(
+                new PointHistory(1, userId, amount, TransactionType.USE, System.currentTimeMillis())
+        );
+
+        // when
+        PointHistory pointHistory = pointService.saveHistory(userId, amount, TransactionType.USE, System.currentTimeMillis());
+
+        // then
+        assertThat(pointHistory.amount()).isEqualTo(5000);
+        assertThat(pointHistory.type()).isEqualTo(TransactionType.USE);
+        assertThat(pointHistory.id()).isEqualTo(1);
+
+    }
 
     /**
      *  포인트 충전/이용 내역 조회
