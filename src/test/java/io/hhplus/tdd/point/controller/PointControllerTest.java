@@ -2,6 +2,8 @@ package io.hhplus.tdd.point.controller;
 
 import io.hhplus.tdd.ApiControllerAdvice;
 import io.hhplus.tdd.point.PointController;
+import io.hhplus.tdd.point.PointHistory;
+import io.hhplus.tdd.point.TransactionType;
 import io.hhplus.tdd.point.UserPoint;
 import io.hhplus.tdd.point.service.PointService;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,8 +14,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -183,6 +189,47 @@ public class PointControllerTest {
         // then
         actions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.point").value(1000));
+    }
+
+    /**
+     * 포인트 충전/이용 내역 조회
+     */
+    @Test
+    void viewPointHistory() throws Exception {
+        // given
+        String url = "/point/{id}/histories";
+        List<PointHistory> expectedList = Arrays.asList(
+                new PointHistory(1, 1, 1000, TransactionType.CHARGE, System.currentTimeMillis()),
+                new PointHistory(2, 1, 2000, TransactionType.CHARGE, System.currentTimeMillis()),
+                new PointHistory(3, 1, 2000, TransactionType.USE, System.currentTimeMillis()),
+                new PointHistory(4, 1, 10000, TransactionType.CHARGE, System.currentTimeMillis()),
+                new PointHistory(5, 1, 5000, TransactionType.USE, System.currentTimeMillis())
+        );
+        when(pointService.viewPointHistory(anyLong())).thenReturn(expectedList);
+
+        // when
+        ResultActions actions = mockMvc.perform(get(url, 1));
+        MvcResult mvcResult = actions.andReturn();
+
+        // then
+        actions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(5))
+                .andExpect(jsonPath("$[0].amount").value(1000))
+                .andExpect(jsonPath("$[0].type").value("CHARGE"))
+
+                .andExpect(jsonPath("$[1].amount").value(2000))
+                .andExpect(jsonPath("$[1].type").value("CHARGE"))
+
+                .andExpect(jsonPath("$[2].amount").value(2000))
+                .andExpect(jsonPath("$[2].type").value("USE"))
+
+                .andExpect(jsonPath("$[3].amount").value(10000))
+                .andExpect(jsonPath("$[3].type").value("CHARGE"))
+
+                .andExpect(jsonPath("$[4].amount").value(5000))
+                .andExpect(jsonPath("$[4].type").value("USE"));
+
+
     }
 
 }
