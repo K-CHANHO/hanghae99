@@ -1,5 +1,7 @@
 package io.hhplus.tdd.point;
 
+import io.hhplus.tdd.point.dto.PointChargeRequest;
+import io.hhplus.tdd.point.dto.PointUseRequest;
 import io.hhplus.tdd.point.service.PointService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -45,12 +47,12 @@ public class PointController {
     public UserPoint charge(
             @PathVariable long id,
 //            @RequestBody Long amount
-            @RequestBody Map<String, Long> amountMap
+            @RequestBody PointChargeRequest pointChargeRequest
             ) throws Exception {
 
-        if(amountMap.get("amount") < 0) throw new Exception("포인트는 마이너스가 될 수 없습니다.");
+        if(pointChargeRequest.getAmount() < 0) throw new Exception("포인트는 0원 이하로 충전할 수 없습니다");
 
-        return pointService.chargePoint(id, amountMap.get("amount"));
+        return pointService.chargePoint(id, pointChargeRequest.getAmount());
     }
 
     /**
@@ -60,11 +62,11 @@ public class PointController {
     public UserPoint use(
             @PathVariable long id,
 //            @RequestBody long amount
-            @RequestBody Map<String, Long> amountMap
+            @RequestBody PointUseRequest pointUseRequest
     ) throws Exception {
 
-        if(amountMap.get("amount") < 0) throw new Exception("포인트는 0원 이하로 사용할 수 없습니다");
+        if(pointUseRequest.getAmount() < 0) throw new Exception("포인트는 0원 이하로 사용할 수 없습니다.");
 
-        return pointService.usePoint(id, amountMap.get("amount"));
+        return pointService.usePoint(id, pointUseRequest.getAmount());
     }
 }
