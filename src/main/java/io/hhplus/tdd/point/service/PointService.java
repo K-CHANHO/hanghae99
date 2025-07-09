@@ -22,7 +22,7 @@ public class PointService {
         return userPointTable.selectById(userId);
     }
 
-    public UserPoint chargePoint(long userId, long chargeAmount) throws Exception {
+    public synchronized UserPoint chargePoint(long userId, long chargeAmount) throws Exception {
         UserPoint userPoint = userPointTable.selectById(userId);
 
         long chargedPoint = userPoint.point() + chargeAmount;
